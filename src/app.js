@@ -64,18 +64,26 @@ const galleryItems = [
   },
 ];
 
-const galleryList = document.querySelector(".gallery");
-const galleryLightbox = document.querySelector(".lightbox");
-const galleryLightboxImage = document.querySelector(".lightbox__image");
+const galleryList = document.querySelector('.gallery');
+const galleryLightbox = document.querySelector('.lightbox');
+const galleryLightboxImage = document.querySelector('.lightbox__image');
+const gallaryLightboxCloseButton = document.querySelector(
+  'button[data-action="close-lightbox"]',
+);
 
-galleryList.addEventListener("click", imageModalOpen);
-
+galleryList.addEventListener('click', imageModalOpen);
+gallaryLightboxCloseButton.addEventListener('click', imageModalClose);
+window.addEventListener('keydown', event => {
+  if (event.key == 'Escape') {
+    imageModalClose();
+  }
+});
 
 const galleryListElement = galleryItems.map(item => {
   return `<li class="gallery__item">
   <a
     class="gallery__link"
-    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
+    href="${item.original}"
   >
     <img
       class="gallery__image"
@@ -90,6 +98,14 @@ const galleryListElement = galleryItems.map(item => {
 galleryList.insertAdjacentHTML('beforeend', galleryListElement.join(' '));
 
 function imageModalOpen(event) {
-  console.log(event);
+  event.preventDefault();
+  if (event.target.nodeName !== 'IMG') return;
+  galleryLightbox.classList.add('is-open');
+  galleryLightboxImage.setAttribute('src', event.target.dataset.source);
+  galleryLightboxImage.setAttribute('alt', event.target.alt);
+}
 
-};
+function imageModalClose(event) {
+  galleryLightbox.classList.remove('is-open');
+  galleryLightboxImage.setAttribute('src', '');
+}
